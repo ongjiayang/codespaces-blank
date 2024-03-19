@@ -3,7 +3,6 @@ install.packages("data.table")
 library(shiny)
 library(data.table)
 
-# Define UI
 ui <- fluidPage(
   titlePanel("Cumulative Paid Claims"),
   sidebarLayout(
@@ -19,18 +18,15 @@ ui <- fluidPage(
   )
 )
 
-# Define server logic
 server <- function(input, output) {
-  # Reactive function to read data
   data <- reactive({
-    req(input$file)  # Require file input
-    fread(input$file$datapath)  # Read CSV file
+    req(input$file)  
+    fread(input$file$datapath)  
   })
   
-  # Reactive function to calculate cumulative triangle
   calculate_cumulative_triangle <- reactive({
     data <- data()  # Get data
-    tail_factor <- input$tail_factor  # Get tail factor
+    tail_factor <- input$tail_factor  
     
     # Form the claims triangle into a matrix
     claims_triangle <- matrix(data = NA, 
@@ -111,9 +107,8 @@ server <- function(input, output) {
   
   # Render the data table
   output$data_table <- renderDataTable({
-    data()  # Display the data table received from the CSV file
+    data()  
   })
 }
 
-# Run the application
 shinyApp(ui = ui, server = server)
