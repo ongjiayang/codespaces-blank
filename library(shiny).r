@@ -1,5 +1,7 @@
 install.packages("shiny")
 install.packages("data.table")
+install.packages("DT")
+library(DT)
 library(shiny)
 library(data.table)
 
@@ -13,6 +15,7 @@ ui <- fluidPage(
     ),
     mainPanel(
       plotOutput("cumulative_plot"),
+      tabPanel("Triangle Table", dataTableOutput("triangle_table")),
       dataTableOutput("data_table") 
     )
   )
@@ -100,14 +103,20 @@ server <- function(input, output) {
     for (i in 2:nrow(cumulative_triangle)) {
       lines(1:ncol(cumulative_triangle), cumulative_triangle[i,], col = i)
     }
-
+    
     # Add legend
     legend("topright", legend = rownames(cumulative_triangle), col = 1:nrow(cumulative_triangle), lty = 1)
   })
   
+  # Render the triangle table
+  output$triangle_table <- renderDataTable({
+    cumulative_triangle <- calculate_cumulative_triangle()
+    as.data.frame(cumulative_triangle)
+  })
+  
   # Render the data table
   output$data_table <- renderDataTable({
-    data()  
+   data()
   })
 }
 
